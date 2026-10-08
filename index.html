@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiger Operations — Precision AI Automation</title>
+<meta name="description" content="Tiger Operations builds precision AI workflow automation — Claude-powered reasoning, validated by code, approved by humans.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #05070a;
+    --black-2: #080b10;
+    --black-3: #0b0f16;
+    --steel-1: #1a2230;
+    --steel-2: #232d40;
+    --steel-3: #2e3a52;
+    --text: #eef2f8;
+    --muted: #8b96ab;
+    --dim: #5b6577;
+    --blue: #00a8ff;
+    --blue-glow: rgba(0, 168, 255, 0.35);
+    --amber: #ff9f1c;
+    --amber-glow: rgba(255, 159, 28, 0.3);
+    --hairline: rgba(255, 255, 255, 0.07);
+    --radius: 6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--black);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Brushed steel texture ---------- */
+  .brushed {
+    background:
+      repeating-linear-gradient(
+        100deg,
+        rgba(255,255,255,0.012) 0px,
+        rgba(255,255,255,0.012) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      linear-gradient(180deg, var(--steel-1) 0%, var(--black-2) 100%);
+  }
+
+  /* ---------- Tapisserie subtle pattern ---------- */
+  .tapisserie {
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.008) 0 1px, transparent 1px 8px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0.008) 0 1px, transparent 1px 8px);
+  }
+
+  ::selection { background: var(--blue); color: #000; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(5, 7, 10, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav-inner {
+    max-width: 1180px; margin: 0 auto; padding: 0 32px;
+    height: 72px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--text); }
+  /* Octagonal mark — Royal Oak bezel */
+  .logo-mark {
+    width: 36px; height: 36px; flex: none;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    background: linear-gradient(135deg, var(--steel-3) 0%, var(--steel-1) 50%, var(--black-3) 100%);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .logo-mark::after {
+    content: '';
+    width: 14px; height: 14px;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    background: var(--blue);
+    box-shadow: 0 0 12px var(--blue-glow);
+  }
+  .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.05rem; letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.85rem;
+    letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+    transition: color 0.25s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem !important; font-weight: 600 !important;
+    letter-spacing: 0.1em !important; text-transform: uppercase;
+    color: var(--black) !important;
+    background: var(--blue);
+    padding: 11px 22px; border-radius: var(--radius);
+    box-shadow: 0 0 24px rgba(0, 168, 255, 0.25);
+    transition: box-shadow 0.3s, transform 0.2s !important;
+  }
+  .nav-cta:hover { box-shadow: 0 0 36px rgba(0, 168, 255, 0.45); transform: translateY(-1px); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative;
+    padding: 140px 0 100px;
+    overflow: hidden;
+  }
+  /* Ambient neon glow — Thief night */
+  .hero::before {
+    content: '';
+    position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(0,168,255,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -30%; right: -10%;
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse at center, rgba(255,159,28,0.045) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  /* Giant octagon watermark */
+  .hero-octagon {
+    position: absolute; right: -140px; top: 50%; transform: translateY(-50%);
+    width: 560px; height: 560px; opacity: 0.05;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    background:
+      repeating-linear-gradient(100deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 4px),
+      linear-gradient(135deg, var(--steel-2), var(--black-3));
+    pointer-events: none;
+    animation: slow-spin 60s linear infinite;
+  }
+  @keyframes slow-spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 1180px; margin: 0 auto; padding: 0 32px; width: 100%; }
+  .hero-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .hero-kicker::before {
+    content: ''; width: 48px; height: 1px;
+    background: linear-gradient(90deg, var(--blue), transparent);
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 7.5vw, 6rem);
+    font-weight: 700; line-height: 1.02; letter-spacing: -0.03em;
+    margin-bottom: 32px; max-width: 16ch;
+  }
+  .hero h1 .steel {
+    background: linear-gradient(180deg, #ffffff 20%, #9aa7bd 55%, #5b6577 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .hero h1 .neon {
+    color: var(--blue);
+    text-shadow: 0 0 40px var(--blue-glow);
+  }
+  .hero-sub {
+    font-size: 1.15rem; color: var(--muted); max-width: 56ch;
+    margin-bottom: 48px; font-weight: 400; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 0.92rem; letter-spacing: 0.06em;
+    padding: 17px 34px; border-radius: var(--radius);
+    text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+    transition: transform 0.2s, box-shadow 0.3s;
+    text-transform: uppercase;
+  }
+  .btn-primary {
+    background: var(--blue); color: #000;
+    box-shadow: 0 0 30px rgba(0, 168, 255, 0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0, 168, 255, 0.5); }
+  .btn-ghost {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--steel-3);
+  }
+  .btn-ghost:hover { border-color: var(--blue); transform: translateY(-2px); }
+  /* Hero spec bar — like a watch spec sheet */
+  .hero-specs {
+    display: flex; gap: 0; margin-top: 80px;
+    border-top: 1px solid var(--hairline);
+    max-width: 860px;
+  }
+  .hero-spec {
+    flex: 1; padding: 24px 28px 0 0; margin-right: 28px;
+    border-right: 1px solid var(--hairline);
+  }
+  .hero-spec:last-child { border-right: none; margin-right: 0; }
+  .hero-spec .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .hero-spec .num em { font-style: normal; color: var(--blue); }
+  .hero-spec .label {
+    font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--dim); margin-top: 6px;
+  }
+
+  /* ---------- Section scaffolding ---------- */
+  section { padding: 120px 0; position: relative; }
+  .section-head { margin-bottom: 72px; max-width: 720px; }
+  .section-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-kicker::before {
+    content: ''; width: 40px; height: 1px;
+    background: linear-gradient(90deg, var(--amber), transparent);
+  }
+  .section-head h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+    font-weight: 700; letter-spacing: -0.025em; line-height: 1.08;
+    margin-bottom: 20px;
+  }
+  .section-head p { color: var(--muted); font-size: 1.08rem; line-height: 1.7; }
+
+  /* Bezel divider */
+  .bezel {
+    height: 1px; max-width: 1180px; margin: 0 auto;
+    background: linear-gradient(90deg, transparent, var(--steel-3) 20%, var(--steel-2) 50%, var(--steel-3) 80%, transparent);
+  }
+
+  /* ---------- Products ---------- */
+  .products { background: var(--black-2); }
+  .product-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .product-card {
+    position: relative;
+    background:
+      repeating-linear-gradient(100deg, rgba(255,255,255,0.014) 0 1px, transparent 1px 3px),
+      linear-gradient(165deg, var(--black-3) 0%, var(--black-2) 100%);
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    padding: 44px 36px 40px;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+  }
+  .product-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--steel-3), transparent);
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 168, 255, 0.3);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 168, 255, 0.06);
+  }
+  .product-card.flagship {
+    border-color: rgba(255, 159, 28, 0.25);
+  }
+  .product-card.flagship::before {
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  }
+  .product-card.flagship:hover {
+    border-color: rgba(255, 159, 28, 0.45);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 159, 28, 0.08);
+  }
+  .product-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+    display: inline-block; padding: 7px 14px; border-radius: 4px;
+    margin-bottom: 26px;
+  }
+  .tag-flagship { color: var(--amber); border: 1px solid rgba(255, 159, 28, 0.35); background: rgba(255, 159, 28, 0.06); }
+  .tag-live { color: var(--blue); border: 1px solid rgba(0, 168, 255, 0.35); background: rgba(0, 168, 255, 0.06); }
+  .tag-service { color: var(--muted); border: 1px solid var(--steel-3); background: rgba(255,255,255,0.02); }
+  .product-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.45rem; font-weight: 700; letter-spacing: -0.015em;
+    margin-bottom: 16px; line-height: 1.25;
+  }
+  .product-card p { color: var(--muted); font-size: 0.96rem; line-height: 1.7; margin-bottom: 28px; }
+  .product-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 24px; border-top: 1px solid var(--hairline);
+  }
+  .product-price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.25rem; letter-spacing: -0.01em;
+  }
+  .product-price small { font-size: 0.75rem; color: var(--dim); font-weight: 500; letter-spacing: 0.04em; }
+  .product-link {
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--blue); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .product-link::after { content: '→'; transition: transform 0.2s; }
+  .product-link:hover::after { transform: translateX(4px); }
+  .flagship .product-link { color: var(--amber); }
+
+  /* ---------- How it works ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .step {
+    padding: 12px 40px 12px 0; margin-right: 40px;
+    border-right: 1px solid var(--hairline);
+    position: relative;
+  }
+  .step:last-child { border-right: none; margin-right: 0; }
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; letter-spacing: 0.2em; color: var(--dim);
+    margin-bottom: 20px; display: block;
+  }
+  .step-icon {
+    width: 52px; height: 52px; margin-bottom: 28px;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem;
+  }
+  .step:nth-child(1) .step-icon { background: linear-gradient(135deg, rgba(0,168,255,0.18), rgba(0,168,255,0.04)); color: var(--blue); }
+  .step:nth-child(2) .step-icon { background: linear-gradient(135deg, var(--steel-2), var(--black-3)); color: var(--text); border: 1px solid var(--steel-3); }
+  .step:nth-child(3) .step-icon { background: linear-gradient(135deg, rgba(255,159,28,0.16), rgba(255,159,28,0.03)); color: var(--amber); }
+  .step h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem; font-weight: 700; letter-spacing: -0.015em;
+    margin-bottom: 14px;
+  }
+  .step p { color: var(--muted); font-size: 0.96rem; line-height: 1.7; }
+
+  /* ---------- About ---------- */
+  .about { background: var(--black-2); }
+  .about-grid {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-items: start;
+  }
+  .about-copy p { color: var(--muted); font-size: 1.06rem; line-height: 1.8; margin-bottom: 24px; }
+  .about-copy p strong { color: var(--text); font-weight: 600; }
+  .stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: var(--hairline);
+    border: 1px solid var(--hairline); border-radius: 10px; overflow: hidden;
+  }
+  .stat {
+    background: var(--black-3);
+    padding: 36px 32px;
+  }
+  .stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.4rem; font-weight: 700; letter-spacing: -0.025em;
+    margin-bottom: 8px;
+  }
+  .stat .num.blue { color: var(--blue); text-shadow: 0 0 30px var(--blue-glow); }
+  .stat .num.amber { color: var(--amber); text-shadow: 0 0 30px var(--amber-glow); }
+  .stat .label {
+    font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact-box {
+    position: relative;
+    border: 1px solid var(--hairline); border-radius: 14px;
+    padding: 88px 64px; text-align: center;
+    background:
+      repeating-linear-gradient(100deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 3px),
+      radial-gradient(ellipse at 50% 0%, rgba(0,168,255,0.06) 0%, transparent 60%),
+      linear-gradient(180deg, var(--black-3), var(--black-2));
+    overflow: hidden;
+  }
+  .contact-box::before {
+    content: '';
+    position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), var(--amber), transparent);
+    opacity: 0.6;
+  }
+  .contact-box h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 700; letter-spacing: -0.025em; line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .contact-box p { color: var(--muted); font-size: 1.05rem; margin-bottom: 40px; max-width: 52ch; margin-left: auto; margin-right: auto; }
+  .contact-email {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.05rem; letter-spacing: 0.04em;
+    color: var(--text); text-decoration: none;
+    display: inline-block; padding: 18px 40px;
+    border: 1px solid var(--steel-3); border-radius: var(--radius);
+    background: rgba(255,255,255,0.02);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+  .contact-email:hover {
+    border-color: var(--blue); transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0, 168, 255, 0.15);
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding: 48px 0;
+    background: var(--black);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 12px; }
+  .footer-brand .logo-mark { width: 28px; height: 28px; }
+  .footer-brand .logo-mark::after { width: 11px; height: 11px; }
+  .footer-brand span {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .footer-note { color: var(--dim); font-size: 0.82rem; letter-spacing: 0.04em; }
+  .footer-note .dot { color: var(--blue); margin: 0 8px; }
+
+  /* ---------- Reveal animation ---------- */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .product-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 48px; }
+    .step { border-right: none; border-bottom: 1px solid var(--hairline); margin-right: 0; padding: 0 0 40px 0; }
+    .step:last-child { border-bottom: none; padding-bottom: 0; }
+    .about-grid { grid-template-columns: 1fr; gap: 56px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .hero-specs { flex-direction: column; gap: 24px; }
+    .hero-spec { border-right: none; border-bottom: 1px solid var(--hairline); margin-right: 0; padding: 0 0 24px 0; }
+    .hero-spec:last-child { border-bottom: none; padding-bottom: 0; }
+    .hero-octagon { width: 380px; height: 380px; right: -160px; opacity: 0.04; }
+    .contact-box { padding: 64px 32px; }
+    section { padding: 88px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .hero-octagon { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#top">
+      <span class="logo-mark"></span>
+      <span class="logo-text">Tiger Operations</span>
+    </a>
+    <div class="nav-links">
+      <a href="#products">Products</a>
+      <a href="#process">Process</a>
+      <a href="#about">About</a>
+      <a href="mailto:tiger@tigeroperations.com" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero tapisserie" id="top">
+  <div class="hero-octagon"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">AI Workflow Automation</div>
+    <h1><span class="steel">Manual busywork,</span><br><span class="neon">engineered away.</span></h1>
+    <p class="hero-sub">Tiger Operations builds precision automation for the work nobody should do by hand. Claude-powered reasoning interprets the messy parts. Deterministic code validates every output. Humans approve what matters. Auditable, every step.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn btn-primary">See the products</a>
+      <a href="mailto:tiger@tigeroperations.com" class="btn btn-ghost">Talk to us</a>
+    </div>
+    <div class="hero-specs">
+      <div class="hero-spec">
+        <div class="num"><em>13</em></div>
+        <div class="label">Live API endpoints</div>
+      </div>
+      <div class="hero-spec">
+        <div class="num">$0.01</div>
+        <div class="label">Starting price per call</div>
+      </div>
+      <div class="hero-spec">
+        <div class="num">100%</div>
+        <div class="label">Auditable outputs</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bezel"></div>
+
+<section class="products" id="products">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-kicker">What we build</div>
+      <h2>Instruments, not demos.</h2>
+      <p>Every product is built to the same standard: it either earns its place in a real workflow, or it doesn't ship. No prototypes sold as products. No black boxes.</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card flagship reveal">
+        <span class="product-tag tag-flagship">Flagship</span>
+        <h3>CSV-to-ERP Import Adapters</h3>
+        <p>Your customer's exports never match your ERP's import format. We build tested, reusable transformations that turn incompatible files into clean imports — with a full exception report for every row that needs a human eye.</p>
+        <div class="product-meta">
+          <div class="product-price">$299 <small>/ adapter</small></div>
+          <a class="product-link" href="mailto:tiger@tigeroperations.com?subject=CSV-to-ERP%20Adapter">Enquire</a>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <span class="product-tag tag-live">Live API</span>
+        <h3>Scout Packs Data API</h3>
+        <p>Thirteen machine-priced endpoints for B2B data: domain intelligence, tech-stack detection, email patterns, deliverability signals. Built for AI agents and automation pipelines. Pay per call, starting at a cent.</p>
+        <div class="product-meta">
+          <div class="product-price">$0.01 <small>/ call</small></div>
+          <a class="product-link" href="mailto:tiger@tigeroperations.com?subject=Scout%20Packs%20API">Enquire</a>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <span class="product-tag tag-service">Services</span>
+        <h3>Custom Workflow Automation</h3>
+        <p>A document-heavy process eating hours every week? We scope it, build the automation, and hand over something your team can run and audit — reasoning where it's needed, code where it counts.</p>
+        <div class="product-meta">
+          <div class="product-price">Scoped <small>/ project</small></div>
+          <a class="product-link" href="mailto:tiger@tigeroperations.com?subject=Custom%20Automation">Enquire</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bezel"></div>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-kicker">How it works</div>
+      <h2>Three movements. Zero guesswork.</h2>
+      <p>The same discipline, every engagement — whether it's a $299 adapter or a full automation build.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step-num">01</span>
+        <div class="step-icon">◈</div>
+        <h3>Claude interprets</h3>
+        <p>Messy inputs — inconsistent spreadsheets, ambiguous documents, edge-case formats. Claude-powered reasoning handles the interpretation layer that rigid rules can't.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step-num">02</span>
+        <div class="step-icon">⬡</div>
+        <h3>Code validates</h3>
+        <p>Every output passes through deterministic validation: schema checks, business rules, exception flagging. If it can't be verified programmatically, it gets flagged — never silently passed.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step-num">03</span>
+        <div class="step-icon">◎</div>
+        <h3>Humans approve</h3>
+        <p>Consequential actions wait for a human decision. You get a clean exception report, not a black box — approve, correct, or reject with full context on every item.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bezel"></div>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <div class="section-kicker">Who we are</div>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.1rem,4.5vw,3.4rem);font-weight:700;letter-spacing:-0.025em;line-height:1.08;margin-bottom:28px;">Built like a watch.<br>Run like a crew.</h2>
+        <p><strong>Tiger Operations</strong> is an AI software venture focused on one thing: converting manual, document-intensive business processes into auditable software workflows.</p>
+        <p>We don't sell AI as magic. We sell it as <strong>instrumentation</strong> — precise, measurable, and accountable. If an automation can't prove it saved time or caught errors, we kill it.</p>
+        <p>Small team, senior standards. Every product ships with validation, logging, and a human in the loop where it matters.</p>
+      </div>
+      <div class="stat-grid reveal">
+        <div class="stat">
+          <div class="num blue">13</div>
+          <div class="label">Production endpoints</div>
+        </div>
+        <div class="stat">
+          <div class="num">$299</div>
+          <div class="label">Flagship price point</div>
+        </div>
+        <div class="stat">
+          <div class="num amber">24/7</div>
+          <div class="label">Automation uptime goal</div>
+        </div>
+        <div class="stat">
+          <div class="num">0</div>
+          <div class="label">Black boxes shipped</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bezel"></div>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-box reveal">
+      <div class="section-kicker" style="justify-content:center;">Get in touch</div>
+      <h2>Have busywork?<br>Let's automate it.</h2>
+      <p>Tell us about the process eating your team's hours. We'll tell you honestly whether it's automatable — and what it would take.</p>
+      <a class="contact-email" href="mailto:tiger@tigeroperations.com">tiger@tigeroperations.com</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="logo-mark"></span>
+      <span>Tiger Operations</span>
+    </div>
+    <div class="footer-note">Precision automation <span class="dot">◆</span> © 2026 Tiger Operations</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  (function() {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function(e){ e.classList.add('visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(en) {
+        if (en.isIntersecting) { en.target.classList.add('visible'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+</body>
+</html>
