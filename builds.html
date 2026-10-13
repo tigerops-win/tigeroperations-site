@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiger Builds — Tell us the problem. We build the app. | Tiger Operations</title>
+<meta name="description" content="Tiger Builds turns one painful business workflow into a small web app that runs itself — built from proven modules, hosted and maintained by Tiger Operations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090c;
+    --bg-2: #0d0f13;
+    --surface: #101318;
+    --line: rgba(244, 242, 237, 0.09);
+    --line-strong: rgba(244, 242, 237, 0.16);
+    --text: #f4f2ed;
+    --muted: #9ba3ad;
+    --faint: #626a74;
+    --accent: #f0a02c;
+    --accent-dim: rgba(240, 160, 44, 0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: #0a0a0a; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .marquee-track { animation: none !important; }
+    .hero-stripes { animation: none !important; }
+  }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(8, 9, 12, 0.82);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 13px; text-decoration: none; color: var(--text); }
+  .claw { display: inline-flex; gap: 3.5px; transform: skewX(-18deg); }
+  .claw i { display: block; width: 4px; height: 20px; background: var(--accent); border-radius: 2px; }
+  .claw i:nth-child(2) { height: 15px; opacity: 0.75; }
+  .claw i:nth-child(3) { height: 10px; opacity: 0.5; }
+  .brand-name { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.14em; }
+  .nav-links { display: flex; gap: 34px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.nav-cta { color: var(--accent); border: 1px solid rgba(240, 160, 44, 0.4); padding: 8px 16px; border-radius: 6px; }
+  .nav-links a.nav-cta:hover { background: var(--accent-dim); color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; padding: 120px 0 96px; overflow: hidden; }
+  .hero-stripes {
+    position: absolute; inset: -40% -10% auto auto; width: 720px; height: 720px;
+    background: repeating-linear-gradient(-45deg, rgba(240, 160, 44, 0.05) 0 2px, transparent 2px 26px);
+    -webkit-mask-image: radial-gradient(circle at 70% 30%, black 0%, transparent 65%);
+            mask-image: radial-gradient(circle at 70% 30%, black 0%, transparent 65%);
+    animation: drift 26s linear infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-30px, 22px, 0); } }
+  .hero-glow {
+    position: absolute; top: -260px; right: -120px; width: 640px; height: 640px;
+    background: radial-gradient(circle, rgba(240, 160, 44, 0.07) 0%, transparent 62%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 30px;
+  }
+  .eyebrow::before { content: ""; width: 34px; height: 1px; background: var(--accent); }
+  h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(46px, 8.4vw, 92px);
+    font-weight: 700; line-height: 0.98; letter-spacing: -0.022em;
+    max-width: 900px;
+  }
+  h1 .accent { color: var(--accent); }
+  h1 .slash { color: var(--accent); font-weight: 500; }
+  .hero-sub { margin-top: 30px; font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 640px; line-height: 1.65; }
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+  .hero-actions { margin-top: 42px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 600; font-size: 15px;
+    padding: 14px 26px; border-radius: 7px; transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: #0b0a08; }
+  .btn-primary:hover { transform: translateY(-2px); background: #f5ab3a; }
+  .btn-ghost { color: var(--text); border: 1px solid var(--line-strong); }
+  .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- marquee ---------- */
+  .marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 18px 0; overflow: hidden; background: var(--bg-2); }
+  .marquee-track { display: flex; gap: 0; width: max-content; animation: scroll 38s linear infinite; }
+  .marquee-track span {
+    font-family: "Space Grotesk", sans-serif; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.26em; text-transform: uppercase; color: var(--faint);
+    padding: 0 28px; white-space: nowrap;
+  }
+  .marquee-track span b { color: var(--accent); font-weight: 600; }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ---------- sections ---------- */
+  section { padding: 104px 0; }
+  .section-head { display: flex; align-items: baseline; gap: 20px; margin-bottom: 54px; }
+  .section-num { font-family: "Space Grotesk", sans-serif; color: var(--accent); font-size: 15px; font-weight: 700; letter-spacing: 0.1em; }
+  h2 { font-family: "Space Grotesk", sans-serif; font-size: clamp(30px, 4.4vw, 44px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.08; }
+  .section-lede { color: var(--muted); font-size: 17px; max-width: 600px; margin-top: 14px; }
+
+  /* ---------- products ---------- */
+  .products { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .card {
+    position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 40px 36px 36px; overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s;
+  }
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent 65%);
+    opacity: 0; transition: opacity 0.35s;
+  }
+  .card:hover { transform: translateY(-5px); border-color: rgba(240, 160, 44, 0.45); }
+  .card:hover::before { opacity: 1; }
+  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
+  .card-idx { font-family: "Space Grotesk", sans-serif; font-size: 14px; font-weight: 700; color: var(--faint); letter-spacing: 0.12em; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(240, 160, 44, 0.5); animation: pulse 2.4s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(240, 160, 44, 0.45); } 70% { box-shadow: 0 0 0 8px rgba(240, 160, 44, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 160, 44, 0); } }
+  .card h3 { font-family: "Space Grotesk", sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .card .for { font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 18px; }
+  .card p { color: var(--muted); font-size: 16px; line-height: 1.7; }
+  .card ul { list-style: none; margin-top: 22px; border-top: 1px solid var(--line); }
+  .card ul li { padding: 11px 0 11px 24px; position: relative; color: var(--muted); font-size: 14.5px; border-bottom: 1px solid var(--line); }
+  .card ul li:last-child { border-bottom: none; }
+  .card ul li::before { content: ""; position: absolute; left: 2px; top: 19px; width: 9px; height: 2px; background: var(--accent); transform: skewX(-24deg); }
+  .card ul li b { color: var(--text); font-weight: 600; }
+
+  /* ---------- live demo ---------- */
+  .demo-box { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 36px; }
+  .demo-form { display: flex; gap: 12px; flex-wrap: wrap; }
+  .demo-form input {
+    flex: 1 1 280px; background: var(--bg); color: var(--text); border: 1px solid var(--line-strong); border-radius: 7px;
+    padding: 14px 16px; font: 500 15px "Inter", sans-serif; outline: none; transition: border-color 0.2s;
+  }
+  .demo-form input::placeholder { color: var(--faint); }
+  .demo-form input:focus { border-color: var(--accent); }
+  .demo-form .btn { border: none; cursor: pointer; font-family: inherit; }
+  .demo-form .btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .demo-note { margin-top: 14px; color: var(--faint); font-size: 14px; }
+  .demo-out { margin-top: 26px; }
+  .demo-out:empty { display: none; }
+  .demo-msg { font-size: 15px; color: var(--muted); }
+  .demo-msg.err { color: #f07a5c; }
+  .demo-msg.loading::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: dots 1.2s steps(4) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+  .demo-card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .demo-card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
+  .demo-card-head h4 { font-family: "Space Grotesk", sans-serif; font-size: 19px; font-weight: 600; }
+  .demo-row { display: grid; grid-template-columns: 180px 1fr; gap: 16px; padding: 11px 20px; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .demo-row:last-child { border-bottom: none; }
+  .demo-row dt { color: var(--faint); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; padding-top: 2px; }
+  .demo-row dd { color: var(--text); word-break: break-word; }
+  .demo-row dd.dim { color: var(--muted); }
+
+  /* ---------- principles ---------- */
+  .principles { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .prin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .prin { padding: 38px 32px; background: var(--surface); }
+  .prin + .prin { border-left: 1px solid var(--line); }
+  .prin .glyph { font-family: "Space Grotesk", sans-serif; font-size: 26px; color: var(--accent); font-weight: 700; margin-bottom: 16px; }
+  .prin h4 { font-family: "Space Grotesk", sans-serif; font-size: 19px; font-weight: 600; margin-bottom: 10px; }
+  .prin p { color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+  /* ---------- contact ---------- */
+  .contact { text-align: left; }
+  .contact h2 { font-size: clamp(36px, 6vw, 62px); max-width: 720px; }
+  .contact p { color: var(--muted); font-size: 18px; margin-top: 20px; max-width: 560px; }
+  .contact .mail {
+    display: inline-block; margin-top: 36px;
+    font-family: "Space Grotesk", sans-serif; font-size: clamp(20px, 3.4vw, 30px); font-weight: 600;
+    color: var(--text); text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .contact .mail:hover { color: var(--accent); }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0 44px; }
+  .foot-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .foot-inner p { color: var(--faint); font-size: 14px; }
+  .foot-brand { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; letter-spacing: 0.14em; font-weight: 600; }
+
+  @media (max-width: 860px) {
+    .products, .prin-grid { grid-template-columns: 1fr; }
+    .prin + .prin { border-left: none; border-top: 1px solid var(--line); }
+    .demo-box { padding: 24px 20px; }
+    .demo-row { grid-template-columns: 1fr; gap: 2px; }
+    section { padding: 72px 0; }
+    .hero { padding: 84px 0 72px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+
+  /* ---------- tiger builds ---------- */
+  .prin .glyph { letter-spacing: 0.06em; }
+  .mod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .mod { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 28px 26px; transition: border-color 0.3s, transform 0.3s; }
+  .mod:hover { border-color: rgba(240, 160, 44, 0.45); transform: translateY(-3px); }
+  .mod h4 { font-family: "Space Grotesk", sans-serif; font-size: 19px; font-weight: 600; margin: 14px 0 8px; }
+  .mod p { color: var(--muted); font-size: 15px; line-height: 1.65; }
+  .offer { max-width: 760px; }
+  .offer .hl { color: var(--accent); font-weight: 700; }
+  .intake-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 18px; }
+  .intake-form .field { display: flex; flex-direction: column; gap: 8px; }
+  .intake-form .field.full { grid-column: 1 / -1; }
+  .intake-form label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); }
+  .intake-form .opt { color: var(--faint); font-weight: 500; }
+  .intake-form input, .intake-form textarea {
+    background: var(--bg); color: var(--text); border: 1px solid var(--line-strong); border-radius: 7px;
+    padding: 14px 16px; font: 500 15px "Inter", sans-serif; outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  .intake-form textarea { resize: vertical; min-height: 140px; line-height: 1.55; }
+  .intake-form input::placeholder, .intake-form textarea::placeholder { color: var(--faint); }
+  .intake-form input:focus, .intake-form textarea:focus { border-color: var(--accent); }
+  .intake-form .btn { border: none; cursor: pointer; font-family: inherit; justify-self: start; align-self: flex-start; }
+  .intake-form .btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .intake-form + .demo-out { margin-top: 22px; }
+  .demo-msg.ok { color: var(--text); font-size: 17px; border-left: 3px solid var(--accent); padding-left: 14px; }
+  .foot-link { color: var(--muted); text-decoration: none; }
+  .foot-link:hover { color: var(--accent); }
+  @media (max-width: 860px) {
+    .mod-grid, .intake-form { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <span class="claw"><i></i><i></i><i></i></span>
+      <span class="brand-name">TIGER&nbsp;OPERATIONS</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#how">How it works</a>
+      <a href="#modules">What we build</a>
+      <a href="#founding">Founding cohort</a>
+      <a class="nav-cta" href="#intake">Start a build</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-stripes"></div>
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <p class="eyebrow reveal">Tiger Builds</p>
+    <h1 class="reveal">Tell us the problem<span class="slash">.</span> <span class="accent">We build the app</span><span class="slash">.</span></h1>
+    <p class="hero-sub reveal">Tiger Builds turns one painful business workflow into a small web app that runs itself — <strong>built from proven modules, hosted and maintained by us.</strong></p>
+    <div class="hero-actions reveal">
+      <a class="btn btn-primary" href="#intake">Describe your problem</a>
+      <a class="btn btn-ghost" href="#founding">Founding cohort offer</a>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>Intake forms <b>/</b></span><span>Quote follow-up <b>/</b></span><span>Booking pages <b>/</b></span><span>Dashboards <b>/</b></span><span>Calculators <b>/</b></span><span>Review requests <b>/</b></span><span>Hosted for you <b>/</b></span><span>Maintained for you <b>/</b></span>
+  </div>
+</div>
+
+<main>
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-num">01</span>
+        <div>
+          <h2>How it works</h2>
+          <p class="section-lede">Three steps. You describe the problem; we handle the build and everything after it.</p>
+        </div>
+      </div>
+      <div class="prin-grid reveal">
+        <div class="prin">
+          <div class="glyph">01</div>
+          <h4>Describe the problem</h4>
+          <p>Fill out the two-minute intake below. Tell us which workflow is eating your week and what you use for it today — a spreadsheet, a notebook, your inbox.</p>
+        </div>
+        <div class="prin">
+          <div class="glyph">02</div>
+          <h4>We assemble your app</h4>
+          <p>We build it from proven modules rather than starting from scratch, then put it on a live link you can use and share right away.</p>
+        </div>
+        <div class="prin">
+          <div class="glyph">03</div>
+          <h4>It runs on our stack</h4>
+          <p>Hosting, fixes, and updates are included. There's nothing for you to install, patch, or keep running.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="modules" class="principles">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-num">02</span>
+        <div>
+          <h2>What we build</h2>
+          <p class="section-lede">Every app is assembled from these modules. Most workflows need one or two of them.</p>
+        </div>
+      </div>
+      <div class="mod-grid reveal">
+        <div class="mod"><span class="card-idx">/ 01</span><h4>Intake &amp; lead forms</h4><p>Capture new requests in a consistent format, so nothing arrives half-filled or gets lost in a text thread.</p></div>
+        <div class="mod"><span class="card-idx">/ 02</span><h4>Quote follow-up automations</h4><p>Quotes you send get followed up on a schedule, so a quiet lead doesn't go cold just because nobody had time to chase it.</p></div>
+        <div class="mod"><span class="card-idx">/ 03</span><h4>Booking &amp; scheduling pages</h4><p>Customers pick an open slot themselves instead of trading messages back and forth with you.</p></div>
+        <div class="mod"><span class="card-idx">/ 04</span><h4>Simple dashboards</h4><p>The handful of numbers you actually check, on one page, without rebuilding a spreadsheet every week.</p></div>
+        <div class="mod"><span class="card-idx">/ 05</span><h4>Calculators &amp; estimators</h4><p>Turn your pricing rules into a tool that gives a consistent number every time, for you or your customers.</p></div>
+        <div class="mod"><span class="card-idx">/ 06</span><h4>Review-request flows</h4><p>Ask finished customers for a review at the right moment, automatically.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="founding">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-num">03</span>
+        <div>
+          <h2>Founding cohort — 10 spots</h2>
+          <p class="section-lede">We're opening Tiger Builds with ten founding businesses.</p>
+        </div>
+      </div>
+      <article class="card offer reveal">
+        <div class="card-top">
+          <span class="card-idx">/ FOUNDING</span>
+          <span class="status">Open</span>
+        </div>
+        <h3>Build free + 3 months free</h3>
+        <p class="for">For 10 businesses</p>
+        <p>We build your app at no cost and host it free for three months. In exchange, we ask for your logo and a short testimonial on our site. After the free period, founding members lock in <strong class="hl">$49/mo</strong> — the regular price is $99/mo.</p>
+        <ul>
+          <li><b>One workflow</b> per app</li>
+          <li><b>Two revision rounds</b> to get it right</li>
+          <li><b>Live on our stack</b> — hosting, fixes, and updates included</li>
+          <li><b>$49/mo locked</b> for founding members after the free period (regular $99/mo)</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section id="intake" class="principles">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-num">04</span>
+        <div>
+          <h2>Describe your problem</h2>
+          <p class="section-lede">About two minutes. A person reads every request.</p>
+        </div>
+      </div>
+      <div class="demo-box reveal">
+        <form class="intake-form" id="intakeForm" novalidate>
+          <div class="field">
+            <label for="fBiz">Business name</label>
+            <input id="fBiz" name="business_name" type="text" maxlength="200" autocomplete="organization" required>
+          </div>
+          <div class="field">
+            <label for="fEmail">Contact email</label>
+            <input id="fEmail" name="email" type="email" maxlength="254" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="fTrade">Business type / trade</label>
+            <input id="fTrade" name="trade" type="text" maxlength="200" placeholder="e.g. HVAC, salon, bookkeeping" required>
+          </div>
+          <div class="field">
+            <label for="fTool">Current tool <span class="opt">(optional)</span></label>
+            <input id="fTool" name="current_tool" type="text" maxlength="300" placeholder="e.g. spreadsheet, paper, email">
+          </div>
+          <div class="field full">
+            <label for="fProblem">What's the workflow eating your week?</label>
+            <textarea id="fProblem" name="problem" rows="6" minlength="10" maxlength="4000" placeholder="Walk us through what happens today, and where it breaks down." required></textarea>
+          </div>
+          <div class="field full">
+            <button class="btn btn-primary" id="intakeBtn" type="submit">Send my request</button>
+          </div>
+        </form>
+        <div class="demo-out" id="intakeOut" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="foot-brand"><span class="claw"><i></i><i></i><i></i></span> TIGER OPERATIONS</span>
+    <p><a class="foot-link" href="index.html">Home</a> &nbsp;·&nbsp; <a class="foot-link" href="mailto:tiger@tigeroperations.com">tiger@tigeroperations.com</a> &nbsp;·&nbsp; © 2026 Tiger Operations.</p>
+  </div>
+</footer>
+
+<script>
+  var track = document.getElementById('marqueeTrack');
+  track.innerHTML += track.innerHTML;
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  // Tiger Builds intake: POST JSON to the Scout Packs API /build-intake
+  var form = document.getElementById('intakeForm');
+  var out = document.getElementById('intakeOut');
+  var btn = document.getElementById('intakeBtn');
+  function msg(text, cls) {
+    var p = document.createElement('p');
+    p.className = 'demo-msg ' + (cls || '');
+    p.textContent = text;
+    out.replaceChildren(p);
+  }
+  function val(id) { return document.getElementById(id).value.trim(); }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var data = {
+      business_name: val('fBiz'),
+      email: val('fEmail'),
+      trade: val('fTrade'),
+      problem: val('fProblem'),
+      current_tool: val('fTool')
+    };
+    if (!data.business_name || !data.email || !data.trade || !data.problem) {
+      return msg('Please fill in your business name, email, trade, and the problem.', 'err');
+    }
+    if (data.email.indexOf('@') < 1) return msg('That email address doesn’t look right.', 'err');
+    if (data.problem.length < 10) return msg('Tell us a little more about the problem (at least 10 characters).', 'err');
+    btn.disabled = true;
+    msg('Sending', 'loading');
+    fetch('https://scout-packs-production.up.railway.app/build-intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+      .then(function (r) {
+        if (r.status === 201) {
+          form.reset();
+          form.style.display = 'none';
+          return msg('Got it — we review every request by hand and reply within 2 business days.', 'ok');
+        }
+        if (r.status === 429) return msg('Too many requests from this connection. Please try again in an hour, or email tiger@tigeroperations.com.', 'err');
+        if (r.status === 400) return msg('Something in the form didn’t pass our checks. Please review the fields and try again.', 'err');
+        msg('Something went wrong on our end (' + r.status + '). Please try again, or email tiger@tigeroperations.com.', 'err');
+      })
+      .catch(function () { msg('Couldn’t send your request. Check your connection and try again, or email tiger@tigeroperations.com.', 'err'); })
+      .then(function () { btn.disabled = false; });
+  });
+</script>
+</body>
+</html>
