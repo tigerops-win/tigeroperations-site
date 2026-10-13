@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#08090c">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Tiger Builds — Tell us the problem. We build the app. | Tiger Operations</title>
 <meta name="description" content="Tiger Builds turns one painful business workflow into a small web app that runs itself — built from proven modules, hosted and maintained by Tiger Operations.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -465,6 +468,15 @@
       .catch(function () { msg('Couldn’t send your request. Check your connection and try again, or email tiger@tigeroperations.com.', 'err'); })
       .then(function () { btn.disabled = false; });
   });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function (error) {
+        console.warn('Service worker registration failed:', error);
+      });
+    });
+  }
 </script>
 </body>
 </html>

@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#08090c">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Tiger Operations — Data Supply for the Agent Economy</title>
 <meta name="description" content="Tiger Operations builds the supply layer for the AI-agent economy: per-call data APIs for AI agents and file-only NetSuite CSV preflight and repair.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -446,6 +449,15 @@
       .catch(function () { demoMsg("Couldn't reach the API. Check your connection and try again.", 'err'); })
       .then(function () { demoBtn.disabled = false; });
   });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function (error) {
+        console.warn('Service worker registration failed:', error);
+      });
+    });
+  }
 </script>
 </body>
 </html>
