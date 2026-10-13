@@ -151,6 +151,33 @@
   .card ul li::before { content: ""; position: absolute; left: 2px; top: 19px; width: 9px; height: 2px; background: var(--accent); transform: skewX(-24deg); }
   .card ul li b { color: var(--text); font-weight: 600; }
 
+  /* ---------- live demo ---------- */
+  .demo-box { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 36px; }
+  .demo-form { display: flex; gap: 12px; flex-wrap: wrap; }
+  .demo-form input {
+    flex: 1 1 280px; background: var(--bg); color: var(--text); border: 1px solid var(--line-strong); border-radius: 7px;
+    padding: 14px 16px; font: 500 15px "Inter", sans-serif; outline: none; transition: border-color 0.2s;
+  }
+  .demo-form input::placeholder { color: var(--faint); }
+  .demo-form input:focus { border-color: var(--accent); }
+  .demo-form .btn { border: none; cursor: pointer; font-family: inherit; }
+  .demo-form .btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .demo-note { margin-top: 14px; color: var(--faint); font-size: 14px; }
+  .demo-out { margin-top: 26px; }
+  .demo-out:empty { display: none; }
+  .demo-msg { font-size: 15px; color: var(--muted); }
+  .demo-msg.err { color: #f07a5c; }
+  .demo-msg.loading::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: dots 1.2s steps(4) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+  .demo-card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .demo-card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
+  .demo-card-head h4 { font-family: "Space Grotesk", sans-serif; font-size: 19px; font-weight: 600; }
+  .demo-row { display: grid; grid-template-columns: 180px 1fr; gap: 16px; padding: 11px 20px; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .demo-row:last-child { border-bottom: none; }
+  .demo-row dt { color: var(--faint); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; padding-top: 2px; }
+  .demo-row dd { color: var(--text); word-break: break-word; }
+  .demo-row dd.dim { color: var(--muted); }
+
   /* ---------- principles ---------- */
   .principles { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .prin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
@@ -180,6 +207,8 @@
   @media (max-width: 860px) {
     .products, .prin-grid { grid-template-columns: 1fr; }
     .prin + .prin { border-left: none; border-top: 1px solid var(--line); }
+    .demo-box { padding: 24px 20px; }
+    .demo-row { grid-template-columns: 1fr; gap: 2px; }
     section { padding: 72px 0; }
     .hero { padding: 84px 0 72px; }
     .nav-links a:not(.nav-cta) { display: none; }
@@ -196,6 +225,7 @@
     </a>
     <div class="nav-links">
       <a href="#products">Products</a>
+      <a href="#demo">Live demo</a>
       <a href="#principles">How we work</a>
       <a class="nav-cta" href="mailto:tiger@tigeroperations.com">Contact</a>
     </div>
@@ -267,10 +297,30 @@
     </div>
   </section>
 
-  <section id="principles" class="principles">
+  <section id="demo">
     <div class="wrap">
       <div class="section-head reveal">
         <span class="section-num">02</span>
+        <div>
+          <h2>Live demo</h2>
+          <p class="section-lede">Enter any domain and pull its registration, DNS, and mail infrastructure in real time.</p>
+        </div>
+      </div>
+      <div class="demo-box reveal">
+        <form class="demo-form" id="demoForm">
+          <input id="demoDomain" type="text" placeholder="example.com" aria-label="Domain" autocomplete="off" spellcheck="false" maxlength="253" required>
+          <button class="btn btn-primary" id="demoBtn" type="submit">Run live intel</button>
+        </form>
+        <p class="demo-note">Live from the Scout Packs API — the same endpoints AI agents pay for, per call.</p>
+        <div class="demo-out" id="demoOut" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="principles" class="principles">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-num">03</span>
         <div>
           <h2>How we work</h2>
         </div>
@@ -298,7 +348,7 @@
   <section class="contact">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="section-num">03</span>
+        <span class="section-num">04</span>
         <div><h2>Talk to us</h2></div>
       </div>
       <p class="reveal">Building an agent that needs data it can buy? Running NetSuite imports that keep failing at the worst moment? One inbox reaches everything we operate.</p>
@@ -326,6 +376,75 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  // Live demo: free, rate-limited Scout Packs /demo endpoint
+  var demoForm = document.getElementById('demoForm');
+  var demoOut = document.getElementById('demoOut');
+  var demoBtn = document.getElementById('demoBtn');
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function demoMsg(text, cls) {
+    demoOut.replaceChildren(el('p', 'demo-msg ' + (cls || ''), text));
+  }
+  function list(a) { return a && a.length ? a.join(', ') : null; }
+  function demoRender(d) {
+    var mail = d.mail || {}, a = d.a_records || {}, aaaa = d.aaaa_records || {};
+    var provider = mail.provider ? mail.provider.replace(/_/g, ' ') : null;
+    var rows = [
+      ['Registrar', d.registrar],
+      ['Created', d.created ? d.created.slice(0, 10) + (d.domain_age_days != null ? '  (' + d.domain_age_days.toLocaleString() + ' days old)' : '') : null],
+      ['Nameservers', list(d.nameservers)],
+      ['Mail provider', provider],
+      ['MX hosts', list(mail.mx_hosts) || (mail.mx_found === false ? 'None found' : null)],
+      ['A records', a.count ? a.count + ' — ' + list(a.sample) : 'None'],
+      ['AAAA records', aaaa.count ? aaaa.count + ' — ' + list(aaaa.sample) : 'None']
+    ];
+    var card = el('div', 'demo-card');
+    var head = el('div', 'demo-card-head');
+    head.appendChild(el('h4', null, d.domain));
+    head.appendChild(el('span', 'status', 'Live'));
+    card.appendChild(head);
+    var dl = el('dl');
+    rows.forEach(function (r) {
+      var row = el('div', 'demo-row');
+      row.appendChild(el('dt', null, r[0]));
+      row.appendChild(el('dd', r[1] ? null : 'dim', r[1] || 'Not available'));
+      dl.appendChild(row);
+    });
+    var fv = d.full_version || {};
+    var row = el('div', 'demo-row');
+    row.appendChild(el('dt', null, 'Full version'));
+    row.appendChild(el('dd', 'dim', (fv.endpoint || '/domain-intel') + ' — $' + (fv.price_usd || 0.02) + ' per call: adds expiry, status codes, registrant org and risk signals.'));
+    dl.appendChild(row);
+    card.appendChild(dl);
+    demoOut.replaceChildren(card);
+  }
+  demoForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var domain = document.getElementById('demoDomain').value.trim();
+    if (!domain) return;
+    demoBtn.disabled = true;
+    demoMsg('Querying RDAP and DNS for ' + domain, 'loading');
+    fetch('https://scout-packs-production.up.railway.app/demo?domain=' + encodeURIComponent(domain))
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (body) { return { status: r.status, body: body }; });
+      })
+      .then(function (res) {
+        if (res.status === 200) return demoRender(res.body);
+        if (res.status === 400) return demoMsg("That doesn't look like a domain. Try something like example.com.", 'err');
+        if (res.status === 429) {
+          var mins = Math.ceil((res.body.retry_after_seconds || 3600) / 60);
+          return demoMsg('Demo limit reached — try again in about ' + mins + ' min. Agents use the paid /domain-intel endpoint with no limits.', 'err');
+        }
+        demoMsg('The API returned an error (' + res.status + '). Please try again.', 'err');
+      })
+      .catch(function () { demoMsg("Couldn't reach the API. Check your connection and try again.", 'err'); })
+      .then(function () { demoBtn.disabled = false; });
+  });
 </script>
 </body>
 </html>
